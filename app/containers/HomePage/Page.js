@@ -13,12 +13,14 @@ import Content from '../../components/Content';
 
 export class HomePage extends React.Component {
   componentDidMount() {
+    this.props.getAgenciesRequest();
+    this.props.getCategoriesRequest();
     this.props.getPricesRequest();
   }
 
   render() {
-    const { prices } = this.props;
-    console.log({ prices });
+    const { agencies, categories, prices } = this.props;
+    console.log({ agencies, categories, prices });
     return (
       <article>
         <Helmet>
@@ -38,7 +40,11 @@ export class HomePage extends React.Component {
 }
 
 HomePage.propTypes = {
+  agencies: PropTypes.array,
+  categories: PropTypes.array,
   prices: PropTypes.array,
+  getAgenciesRequest: PropTypes.func.isRequired,
+  getCategoriesRequest: PropTypes.func.isRequired,
   getPricesRequest: PropTypes.func.isRequired,
 };
 
