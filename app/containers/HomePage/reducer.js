@@ -10,6 +10,7 @@ export const initialState = fromJS({
   agencies: null,
   categories: null,
   prices: null,
+  filtered: null,
 });
 
 function homeReducer(state = initialState, action) {
@@ -20,6 +21,8 @@ function homeReducer(state = initialState, action) {
       return state.set('categories', action.categories);
     case constants.TYPE_PRICES_SUCCESS:
       return state.set('prices', action.prices);
+    case constants.TYPE_PRICES_FILTER_SUCCESS:
+      return state.set('filtered', action.prices);
     default:
       return state;
   }

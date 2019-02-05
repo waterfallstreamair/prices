@@ -9,14 +9,22 @@ import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import injectReducer from 'utils/injectReducer';
 import injectSaga from 'utils/injectSaga';
-import { makeSelectPrices } from './selectors';
+import {
+  makeSelectAgencies,
+  makeSelectCategories,
+  makeSelectPrices,
+  makeSelectFiltered,
+} from './selectors';
 import reducer from './reducer';
 import saga from './saga';
 import HomePage from './Page';
 import * as actions from './actions';
 
 const mapStateToProps = createStructuredSelector({
+  agencies: makeSelectAgencies(),
+  categories: makeSelectCategories(),
   prices: makeSelectPrices(),
+  filtered: makeSelectFiltered(),
 });
 
 const mapDispatchToProps = dispatch => ({
