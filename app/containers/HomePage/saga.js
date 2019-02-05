@@ -11,41 +11,32 @@ import {
   TYPE_FILTER_REQUEST,
 } from './constants';
 import * as actions from './actions';
-import { makeSelectPrices } from './selectors';
-
-export function* getAgencies() {
-  const urlAgencies = `${CONST_URL_BASE}${CONST_URL_AGENCIES}`;
-  console.log({ urlAgencies });
-  try {
-    const agencies = yield call(request, urlAgencies);
-    yield put(actions.setAgencies({ agencies }));
-  } catch (e) {
-    // yield put(actions.showInfo({ e }));
-  }
-}
+import {
+  makeSelectPrices,
+  makeSelectAgencyId,
+  makeSelectValid,
+} from './selectors';
 
 export function* getCategories({ agencyId }) {
   const urlAgencies = `${CONST_URL_BASE}${CONST_URL_AGENCIES}`;
-  const urlCategories = `${urlAgencies}/${agencyId ||
-    1}/${CONST_URL_CATEGORIES}`;
-  console.log({ urlCategories });
+  const urlCategories = `${urlAgencies}/${agencyId}/${CONST_URL_CATEGORIES}`;
   try {
-    const agencies = yield call(request, urlAgencies);
-    yield put(actions.setAgencies({ agencies }));
+    const categories = yield call(request, urlCategories);
+    yield put(actions.setCategories({ categories, agencyId }));
+    const { id } = categories[0];
+    yield getPrices({ categoryId: id || 1 });
   } catch (e) {
     // yield put(actions.showInfo({ e }));
   }
 }
 
-export function* getPrices({ agencyId, categoryId }) {
+export function* getAgencies() {
   const urlAgencies = `${CONST_URL_BASE}${CONST_URL_AGENCIES}`;
-  const urlCategories = `${urlAgencies}/${agencyId ||
-    1}/${CONST_URL_CATEGORIES}`;
-  const urlPrices = `${urlCategories}/${categoryId || 1}/${CONST_URL_PRICES}`;
-  console.log({ urlPrices });
   try {
-    const prices = yield call(request, urlPrices);
-    yield put(actions.setPrices({ prices }));
+    const agencies = yield call(request, urlAgencies);
+    yield put(actions.setAgencies({ agencies }));
+    const { id } = agencies[0];
+    yield getCategories({ agencyId: id || 1 });
   } catch (e) {
     // yield put(actions.showInfo({ e }));
   }
@@ -54,8 +45,24 @@ export function* getPrices({ agencyId, categoryId }) {
 export function* getFiltered({ isValid }) {
   try {
     const prices = yield select(makeSelectPrices());
-    const filtered = prices.filter(e => e.isValidated === isValid);
-    yield put(actions.setFilter({ filtered }));
+    const filtered = prices.filter(e => (isValid ? e.isValidated : true));
+    yield put(actions.setFiltered({ filtered, isValid }));
+  } catch (e) {
+    // yield put(actions.showInfo({ e }));
+  }
+}
+
+export function* getPrices({ categoryId }) {
+  const agencyId = yield select(makeSelectAgencyId());
+  const urlAgencies = `${CONST_URL_BASE}${CONST_URL_AGENCIES}`;
+  const urlCategories = `${urlAgencies}/${agencyId}/${CONST_URL_CATEGORIES}`;
+  const urlPrices = `${urlCategories}/${categoryId}/${CONST_URL_PRICES}`;
+  try {
+    const prices = yield call(request, urlPrices);
+    prices.sort((a, b) => a.startDate - b.startDate);
+    yield put(actions.setPrices({ prices }));
+    const isValid = yield select(makeSelectValid());
+    yield getFiltered({ isValid });
   } catch (e) {
     // yield put(actions.showInfo({ e }));
   }

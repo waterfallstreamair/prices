@@ -29,8 +29,10 @@ const mapStateToProps = createStructuredSelector({
 
 const mapDispatchToProps = dispatch => ({
   getAgenciesRequest: () => dispatch(actions.getAgenciesRequest()),
-  getCategoriesRequest: () => dispatch(actions.getCategoriesRequest()),
-  getPricesRequest: () => dispatch(actions.getPricesRequest()),
+  getCategoriesRequest: options =>
+    dispatch(actions.getCategoriesRequest(options)),
+  getPricesRequest: options => dispatch(actions.getPricesRequest(options)),
+  getFilteredRequest: options => dispatch(actions.getFilteredRequest(options)),
 });
 
 const withConnect = connect(

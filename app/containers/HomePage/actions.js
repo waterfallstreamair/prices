@@ -14,14 +14,14 @@ export const getCategoriesRequest = ({ agencyId }) => ({
   agencyId,
 });
 
-export const setCategories = ({ categories }) => ({
+export const setCategories = ({ categories, agencyId }) => ({
   type: constants.TYPE_CATEGORIES_SUCCESS,
   categories,
+  agencyId,
 });
 
-export const getPricesRequest = ({ agencyId, categoryId }) => ({
+export const getPricesRequest = ({ categoryId }) => ({
   type: constants.TYPE_PRICES_REQUEST,
-  agencyId,
   categoryId,
 });
 
@@ -35,7 +35,8 @@ export const getFilteredRequest = ({ isValid }) => ({
   isValid,
 });
 
-export const setFiltered = ({ filtered }) => ({
+export const setFiltered = ({ filtered, isValid }) => ({
   type: constants.TYPE_FILTER_SUCCESS,
   filtered,
+  isValid,
 });
